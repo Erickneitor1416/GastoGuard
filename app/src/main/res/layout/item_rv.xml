@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:background="@drawable/rectangle_15_shape"
+    android:layout_marginStart="15dp"
+    android:layout_marginEnd="15dp"
+    android:layout_marginBottom="15dp">
+
+    <TextView
+        android:id="@+id/nombre_textview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="Nombre"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/monto_textview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="Monto"
+        android:textSize="24sp"
+        android:padding="5dp"/>
+
+    <TextView
+        android:id="@+id/fecha_textview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="Fecha"
+        android:textSize="24sp"
+        android:padding="5dp"/>
+
+</LinearLayout>
+

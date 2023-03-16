@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "305249403572",
+    "project_id": "gastoguard",
+    "storage_bucket": "gastoguard.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:305249403572:android:6bcef93c5e4e5d2d75cde1",
+        "android_client_info": {
+          "package_name": "com.esmn.gastoguard"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "305249403572-3jhkjdesg2mera5a9v7qjbqhlpobb1u6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCL6I8O_36zuYuqLpRECLdQm6wFTePtxdU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "305249403572-3jhkjdesg2mera5a9v7qjbqhlpobb1u6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

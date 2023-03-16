@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- registro strings -->
+
+    <string name="app_name">GastoGuard</string>
+    <string name="ek_img_content">ExportKit Image</string>
+    <string name="registrate_string">Registrate</string>
+    <string name="placeholder_string"></string>
+    <string name="contrase_a_string">Contrasena</string>
+    <string name="nombre_de_usuario_string">Email</string>
+    <string name="button_string">Ingresar</string>
+    <string name="title_login">Inicio de Sesion</string>
+    <string name="forgot_pass">Olvide mi contrasena</string>
+    <string name="button_2_string">Resumen mensual</string>
+    <string name="transporte_string">Transporte</string>
+
+    <array name="options_gastos">
+        <item>Categoria</item>
+        <item>item 2</item>
+    </array>
+
+    <array name="options_metas">
+        <item>Diario</item>
+        <item>Mensual</item>
+    </array>
+</resources>
