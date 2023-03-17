@@ -58,6 +58,7 @@ class FireStoreDAO {
             }
 
     }
+
     // Obtener una lista de categorías con los gastos de un usuario
     fun getCategoriasDeUsuario(
         idUsuario: String,
@@ -129,6 +130,13 @@ class FireStoreDAO {
     }
 
 
+    fun logoutUsuario() {
+        auth.signOut()
+    }
+
+
+
+
     // Obtener un usuario
     fun getUsuario(
         usuario: Usuario, onSuccess: (Usuario?) -> Unit, onFailure: (Exception) -> Unit
@@ -136,22 +144,23 @@ class FireStoreDAO {
         usuarioRef.whereEqualTo("username", usuario.username)
             .whereEqualTo("password", usuario.password).get().addOnSuccessListener { result ->
                 if (result.documents.isNotEmpty()) {
-                    val usuario = result.documents[0].toObject(Usuario::class.java)
-                    usuario?.id = result.documents[0].id
-                    getGastosDeUsuario(usuario!!.id!!, { gastos ->
-                        usuario.gastos = gastos.toList()
+                    val newUsuario = result.documents[0].toObject(Usuario::class.java)
+                    newUsuario?.id = result.documents[0].id
+                    getGastosDeUsuario(newUsuario!!.id!!, { gastos ->
+                        newUsuario.gastos = gastos.toList()
+                        getMetasDeUsuario(newUsuario.id!!, { metas ->
+                            newUsuario.metas = metas.toList()
+                            onSuccess(newUsuario)
+                        }, { exception ->
+                            Log.e("TAG", "Error al obtener el usuario", exception)
+                            onFailure(exception)
+                        })
                     }, { exception ->
                         Log.e("TAG", "Error al obtener el usuario", exception)
                         onFailure(exception)
                     })
 
-                    getMetasDeUsuario(usuario.id!!, { metas ->
-                        usuario.metas = metas.toList()
-                    }, { exception ->
-                        Log.e("TAG", "Error al obtener el usuario", exception)
-                        onFailure(exception)
-                    })
-                    onSuccess(usuario)
+
                 }
             }.addOnFailureListener { exception ->
                 Log.e("TAG", "Error al obtener el usuario", exception)
@@ -176,6 +185,7 @@ class FireStoreDAO {
                     gasto.id = document.id
                     gastos.add(gasto)
                 }
+                Log.e("gastosssss424524", gastos.toString())
                 onSuccess(gastos)
             }
             .addOnFailureListener { onFailure(it) }
@@ -197,36 +207,49 @@ class FireStoreDAO {
                     meta.id = document.id
                     metas.add(meta)
                 }
+                Log.e("gastosssss424524", metas.toString())
                 onSuccess(metas)
             }
             .addOnFailureListener { onFailure(it) }
     }
 
-    /* Agregar una nueva canción a una playlist existente
-    fun agregarCancion(
-        idPlaylist: String,
-        cancion: Cancion,
+
+    fun agregarGasto(
+        idUsuario: String,
+        gasto: Gasto,
         onSuccess: () -> Unit,
         onFailure: (Exception) -> Unit
     ) {
-        // Obtener referencia a la playlist
-        val playlistRef = playlistsRef.document(idPlaylist)
-        playlistRef.get()
-            .addOnSuccessListener { playlistDoc ->
-                // Obtener matriz de canciones y asignar un nuevo ID a la nueva canción
-                val canciones = playlistDoc.get("canciones") as? List<Cancion> ?: emptyList()
+        // Obtener la referencia a la subcolección "gastos" del usuario
+        val gastosRef = usuarioRef.document(idUsuario).collection("gastos")
 
-
-                // Agregar la nueva canción a la matriz de canciones
-                val nuevasCanciones = canciones + cancion
-
-                // Actualizar el campo canciones en Firestore con la nueva matriz
-                playlistRef.update("canciones", nuevasCanciones)
-                    .addOnSuccessListener { onSuccess() }
-                    .addOnFailureListener { onFailure(it) }
-            }
+        // Agregar el gasto a la subcolección
+        gastosRef.add(gasto).addOnSuccessListener {
+            // Obtener el id generado por Firestore
+            gasto.id = it.id
+            onSuccess()
+        }
             .addOnFailureListener { onFailure(it) }
-    }*/
+    }
+
+
+    fun agregarMeta(
+        idUsuario: String,
+        meta: Meta,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        // Obtener la referencia a la subcolección "gastos" del usuario
+        val gastosRef = usuarioRef.document(idUsuario).collection("metas")
+
+        // Agregar el gasto a la subcolección
+        gastosRef.add(meta).addOnSuccessListener {
+            // Obtener el id generado por Firestore
+            meta.id = it.id
+            onSuccess()
+        }.addOnFailureListener { onFailure(it) }
+    }
+
 
     /* // Actualizar una canción existente dentro de una playlist
      fun actualizarCancion(idPlaylist: String, cancion: Cancion, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {

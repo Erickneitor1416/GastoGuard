@@ -1,5 +1,6 @@
 package com.esmn.gastoguard.rv.Adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -21,12 +22,13 @@ class ResumenItemAdapter(private val resumenList: List<Categoria>) :
     override fun onBindViewHolder(holder: ResumenItemViewHolder, position: Int) {
         val resumenItem = resumenList[position]
         holder.categoria.text = resumenItem.categoria
-        holder.valorCategoria.text = resumenItem.valorCategoria.toString()
+        holder.valorCategoria.text = "$"+resumenItem.valorCategoria.toString()
         // Crear un adaptador hijo con la lista de elementos de la categoría
         val elementoAdapter = GastoItemAdapter(resumenItem.listGastos)
+        Log.e("sfasdjkhfasdjklfhsda",resumenItem.listGastos.toString())
         // Asignar un LinearLayoutManager horizontal al RecyclerView hijo
         holder.recyclerViewHijo.layoutManager =
-            LinearLayoutManager(holder.itemView.context, LinearLayoutManager.HORIZONTAL, false)
+            LinearLayoutManager(holder.itemView.context)
         // Asignar el adaptador hijo al RecyclerView hijo
         holder.recyclerViewHijo.adapter = elementoAdapter
         holder.recyclerViewHijo.addItemDecoration(

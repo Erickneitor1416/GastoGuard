@@ -4,7 +4,8 @@
     app:popupMenuStyle="@style/MenuStyle">
     <item
         android:id="@+id/menu_add_gasto"
-        android:title="Añadir Gasto" />
+        android:title="Añadir Gasto"
+        android:textColor = "@color/white"/>
     <item
         android:id="@+id/menu_add_meta"
         android:title="Añadir Meta" />

@@ -10,7 +10,7 @@ import com.esmn.gastoguard.R
 
 class ItemAdapter (
     private val context: Context,
-    private val items: List<Item>
+    var items: List<Item>
     ) : RecyclerView.Adapter<ItemViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -22,7 +22,7 @@ class ItemAdapter (
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = items[position]
         holder.nombre.text = item.nombre
-        holder.monto.text = item.monto.toString()
+        holder.monto.text = "$"+item.monto.toString()
         holder.fecha.text = item.fecha
     }
 

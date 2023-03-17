@@ -14,7 +14,7 @@ class Gasto(
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString() ?: "",
-        parcel.readDouble() ,
+        parcel.readDouble(),
         parcel.readString() ?: "",
         parcel.readString() ?: ""
     ) {
@@ -22,9 +22,10 @@ class Gasto(
 
     // Constructor vacío para usar con Firebase
     constructor() : this(null, "", 0.0, "", "")
+
     // Constructor vacío para objetos
-    constructor(descripcion: String,monto: Double,fecha: String,categoria: String)
-            : this(null, descripcion,monto,fecha,categoria)
+    constructor(descripcion: String, monto: Double, fecha: String, categoria: String)
+            : this(null, descripcion, monto, fecha, categoria)
 
     override fun describeContents(): Int {
         return 0

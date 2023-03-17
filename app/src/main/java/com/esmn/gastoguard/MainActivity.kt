@@ -13,7 +13,7 @@ import com.esmn.gastoguard.beans.Usuario
 
 class MainActivity : AppCompatActivity() {
 
-    private val dao : FireStoreDAO = FireStoreDAO()
+    private val dao: FireStoreDAO = FireStoreDAO()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -24,16 +24,20 @@ class MainActivity : AppCompatActivity() {
         btnRegistrar.setOnClickListener {
             val username = findViewById<EditText>(R.id.id_username)
             val password = findViewById<EditText>(R.id.id_password)
-            val usuario = Usuario(username.text.toString(),password.text.toString())
-            dao.registrarUsuario(usuario,{
-                Toast.makeText(this, "${usuario.username} Se registro existosamente", Toast.LENGTH_SHORT)
+            val usuario = Usuario(username.text.toString(), password.text.toString())
+            dao.registrarUsuario(usuario, {
+                Toast.makeText(
+                    this,
+                    "${usuario.username} Se registro existosamente",
+                    Toast.LENGTH_SHORT
+                )
                     .show()
                 startActivity(Intent(this, LoginActivity::class.java))
-            },{ exception ->
+            }, { exception ->
                 // Manejar el error si ocurre
                 Toast.makeText(this, "Error registrarse: $exception", Toast.LENGTH_SHORT)
                     .show()
-                Log.e("registrooo",exception.toString())
+                Log.e("registrooo", exception.toString())
             })
         }
 

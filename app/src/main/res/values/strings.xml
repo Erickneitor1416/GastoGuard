@@ -15,8 +15,10 @@
     <string name="transporte_string">Transporte</string>
 
     <array name="options_gastos">
-        <item>Categoria</item>
-        <item>item 2</item>
+        <item>Auto</item>
+        <item>Comida</item>
+        <item>Arriendo</item>
+        <item>S.Basicos</item>
     </array>
 
     <array name="options_metas">

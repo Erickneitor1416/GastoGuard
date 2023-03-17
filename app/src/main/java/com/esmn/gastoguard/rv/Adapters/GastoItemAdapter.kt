@@ -1,5 +1,6 @@
 package com.esmn.gastoguard.rv.Adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +22,7 @@ class GastoItemAdapter (
         val item = items[position]
         holder.fechaGasto.text = item.fecha
         holder.valor.text = item.monto.toString()
+        Log.e("descripcion cat",item.descripcion + items.toString())
     }
 
     override fun getItemCount(): Int {

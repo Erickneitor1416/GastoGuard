@@ -8,7 +8,7 @@
 
     <EditText
         android:id="@+id/search_edit_text"
-        android:layout_width="175dp"
+        android:layout_width="200dp"
         android:layout_height="40dp"
         android:background="@drawable/rectangle_15_ek1_shape"
         android:maxLines="1"
@@ -30,7 +30,7 @@
         android:src="@drawable/ic_search"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.37"
+        app:layout_constraintHorizontal_bias="0.22"
         app:layout_constraintStart_toEndOf="@+id/search_edit_text"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -45,7 +45,7 @@
         android:src="@drawable/ic_logout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.87"
+        app:layout_constraintHorizontal_bias="0.864"
         app:layout_constraintStart_toEndOf="@+id/search_edit_text"
         app:layout_constraintTop_toTopOf="parent" />
 
