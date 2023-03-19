@@ -22,10 +22,9 @@ class ResumenItemAdapter(private val resumenList: List<Categoria>) :
     override fun onBindViewHolder(holder: ResumenItemViewHolder, position: Int) {
         val resumenItem = resumenList[position]
         holder.categoria.text = resumenItem.categoria
-        holder.valorCategoria.text = "$"+resumenItem.valorCategoria.toString()
+        holder.valorCategoria.text = "$" + resumenItem.valorCategoria.toString()
         // Crear un adaptador hijo con la lista de elementos de la categoría
         val elementoAdapter = GastoItemAdapter(resumenItem.listGastos)
-        Log.e("sfasdjkhfasdjklfhsda",resumenItem.listGastos.toString())
         // Asignar un LinearLayoutManager horizontal al RecyclerView hijo
         holder.recyclerViewHijo.layoutManager =
             LinearLayoutManager(holder.itemView.context)

@@ -3,11 +3,13 @@ package com.esmn.gastoguard
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import android.widget.*
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.esmn.gastoguard.BD.FireStoreDAO
+import com.esmn.gastoguard.beans.Gasto
 import com.esmn.gastoguard.beans.Item
 import com.esmn.gastoguard.beans.Meta
 import com.esmn.gastoguard.rv.Adapters.ItemAdapter
@@ -15,9 +17,15 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class MisMetasActivity : AppCompatActivity() {
+    var idItemSeleccionado = 0
+
+    lateinit var itemAdapter: ItemAdapter
+
     lateinit var metas: List<Item>
+    lateinit var listaMetas: ArrayList<Meta>
     lateinit var idUsuario: String
     val dao: FireStoreDAO = FireStoreDAO()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mis_metas)
@@ -41,9 +49,9 @@ class MisMetasActivity : AppCompatActivity() {
         }
 
         val editext1 = findViewById<EditText>(R.id.edittext1)
-        editext1.hint = "Nombre.."
+        editext1.hint = "Nombre..."
         val editext2 = findViewById<EditText>(R.id.edittext2)
-        editext2.hint = "Valor Meta.."
+        editext2.hint = "Valor Meta..."
 
         val combobox = findViewById<Spinner>(R.id.spinner)
         val entries = resources.getStringArray(R.array.options_metas)
@@ -54,7 +62,7 @@ class MisMetasActivity : AppCompatActivity() {
 
 
         idUsuario = intent.getStringExtra("idUsuario")!!
-        val listaMetas: ArrayList<Meta> =
+        listaMetas =
             intent.getParcelableArrayListExtra<Meta>("listaMetas")!!
         val rvMetas: RecyclerView = findViewById(R.id.rv_metas)
         metas = toItem(listaMetas)
@@ -73,6 +81,55 @@ class MisMetasActivity : AppCompatActivity() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        listaMetas =
+            intent.getParcelableArrayListExtra<Meta>("listaMetas")!!
+        val rvMetas: RecyclerView = findViewById(R.id.rv_metas)
+        metas = toItem(listaMetas)
+        initRecyclerView(metas, rvMetas)
+
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_delete_item -> {
+                idItemSeleccionado = itemAdapter.indiceSeleccionado
+                eliminarMeta()
+                return true
+            }
+
+            else -> super.onContextItemSelected(item)
+        }
+    }
+
+    fun eliminarMeta() {
+        val metaIndex = idItemSeleccionado
+
+        val metaId = listaMetas!![metaIndex].id!!
+
+        dao.eliminarMeta(
+            idUsuario, metaId,
+            onSuccess = {
+                Toast.makeText(this, "Meta eliminada con exito", Toast.LENGTH_SHORT)
+                    .show()
+                listaMetas =
+                    listaMetas?.filterIndexed { index, _ -> index != metaIndex } as ArrayList<Meta>
+                val rvMetas: RecyclerView = findViewById(R.id.rv_metas)
+                metas = toItem(listaMetas)
+                initRecyclerView(metas, rvMetas)
+            },
+            onFailure = { error ->
+                Toast.makeText(
+                    this,
+                    "Error al eliminar el gasto: $error",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        )
+    }
+
     fun filterRecyclerView(query: String, recyclerView: RecyclerView) {
         val filteredGastos = metas.filter { meta ->
             meta.nombre.contains(query, ignoreCase = true)
@@ -82,7 +139,6 @@ class MisMetasActivity : AppCompatActivity() {
         adapter.notifyDataSetChanged()
     }
 
-
     fun addItem(recyclerView: RecyclerView) {
         val nombre: String = findViewById<EditText>(R.id.edittext1).text.toString()
         val monto = findViewById<EditText>(R.id.edittext2).text.toString()
@@ -91,18 +147,22 @@ class MisMetasActivity : AppCompatActivity() {
         val newMeta = Meta(nombre, monto.toDouble(), tipo)
         dao.agregarMeta(idUsuario, newMeta,
             onSuccess = {
-            Toast.makeText(
-                this, "${newMeta.nombre} Se registro existosamente", Toast.LENGTH_SHORT
-            ).show()
+                Toast.makeText(
+                    this, "${newMeta.nombre} Se registro existosamente", Toast.LENGTH_SHORT
+                ).show()
 
-            val newList = metas as ArrayList<Item>
-            newList.add(Item(newMeta.nombre, newMeta.monto, newMeta.tipo))
-            val adapter = recyclerView.adapter as ItemAdapter
-            adapter.notifyDataSetChanged()
+                val newList = metas as ArrayList<Item>
+                newList.add(Item(newMeta.nombre, newMeta.monto, newMeta.tipo))
+                val adapter = recyclerView.adapter as ItemAdapter
+                adapter.notifyDataSetChanged()
 
-        }, onFailure = { exception ->
-            Toast.makeText(this, "Error agregar: $exception", Toast.LENGTH_SHORT).show()
-        })
+                findViewById<EditText>(R.id.edittext1).setText("")
+                findViewById<EditText>(R.id.edittext2).setText("")
+                findViewById<Spinner>(R.id.spinner).setSelection(0)
+
+            }, onFailure = { exception ->
+                Toast.makeText(this, "Error agregar: $exception", Toast.LENGTH_SHORT).show()
+            })
 
     }
 
@@ -119,6 +179,9 @@ class MisMetasActivity : AppCompatActivity() {
         val adapter = ItemAdapter(
             this, listItems
         )
+
+        itemAdapter = adapter
+
         recyclerView.adapter = adapter
         recyclerView.itemAnimator = androidx.recyclerview.widget.DefaultItemAnimator()
         recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)

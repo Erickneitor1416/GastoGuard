@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
                 // Manejar el error si ocurre
                 Toast.makeText(this, "Error registrarse: $exception", Toast.LENGTH_SHORT)
                     .show()
-                Log.e("registrooo", exception.toString())
+                Log.e("registro", exception.toString())
             })
         }
 

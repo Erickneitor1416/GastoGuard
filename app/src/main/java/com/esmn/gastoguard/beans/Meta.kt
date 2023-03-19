@@ -9,7 +9,6 @@ data class Meta(
     val nombre: String,
     val monto: Double,
     var tipo: String,
-    //@Exclude @JvmField var recordatorios: List<Recordatorio> = emptyList()
 ) : Parcelable {
 
     // Constructor vacío para usar con Firebase
@@ -24,9 +23,6 @@ data class Meta(
         parcel.readString()!!,
         parcel.readDouble()!!,
         parcel.readString()!!,
-       /* mutableListOf<Recordatorio>().apply {
-            parcel.readList(this, Recordatorio::class.java.classLoader)
-        }*/
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -34,7 +30,6 @@ data class Meta(
         parcel.writeString(nombre)
         parcel.writeDouble(monto)
         parcel.writeString(tipo)
-        //parcel.writeList(recordatorios)
     }
 
     override fun describeContents(): Int {

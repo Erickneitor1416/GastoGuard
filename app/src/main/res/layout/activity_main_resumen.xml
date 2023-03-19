@@ -19,7 +19,7 @@
         app:layout_constraintVertical_bias="0.0">
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/button_2"
+            android:id="@+id/daily_monthly_button"
             android:layout_width="262dp"
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal|center"
@@ -47,7 +47,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.436"
-            app:layout_constraintStart_toEndOf="@+id/button_2"
+            app:layout_constraintStart_toEndOf="@+id/daily_monthly_button"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="SpeakableTextPresentCheck" />
 

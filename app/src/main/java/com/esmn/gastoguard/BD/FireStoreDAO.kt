@@ -87,30 +87,6 @@ class FireStoreDAO {
             .addOnFailureListener { onFailure(it) }
     }
 
-
-    /*// Actualizar una playlist existente
-    fun actualizarPlaylist(
-        idPlaylist: String,
-        playlist: PlayList,
-        onSuccess: () -> Unit,
-        onFailure: (Exception) -> Unit
-    ) {
-        usuarioRef.document(idPlaylist).set(playlist)
-            .addOnSuccessListener { onSuccess() }
-            .addOnFailureListener { onFailure(it) }
-    }*/
-
-    /*// Eliminar una playlist existente
-    fun eliminarPlaylist(
-        idPlaylist: String,
-        onSuccess: () -> Unit,
-        onFailure: (Exception) -> Unit
-    ) {
-        usuarioRef.document(idPlaylist).delete()
-            .addOnSuccessListener { onSuccess() }
-            .addOnFailureListener { onFailure(it) }
-    }*/
-
     fun loginUsuario(
         usuario: Usuario, onSuccess: (usuario: Usuario?) -> Unit, onFailure: (Exception) -> Unit
     ) {
@@ -129,12 +105,9 @@ class FireStoreDAO {
             }
     }
 
-
     fun logoutUsuario() {
         auth.signOut()
     }
-
-
 
 
     // Obtener un usuario
@@ -250,51 +223,55 @@ class FireStoreDAO {
         }.addOnFailureListener { onFailure(it) }
     }
 
+    fun eliminarGasto(
+        idUsuario: String,
+        idGasto: String,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        // Obtener referencia al documento de la canción dentro de la subcolección
+        val gastoRef =
+            usuarioRef.document(idUsuario).collection("gastos").document(idGasto)
 
-    /* // Actualizar una canción existente dentro de una playlist
-     fun actualizarCancion(idPlaylist: String, cancion: Cancion, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-         val cancionesRef = usuarioRef.document(idPlaylist).collection("canciones")
-         cancionesRef.document(cancion.id!!).set(cancion)
-             .addOnSuccessListener { onSuccess() }
-             .addOnFailureListener { onFailure(it) }
-     }
+        gastoRef.get()
+            .addOnSuccessListener { gastoDoc ->
+                // Verificar que el documento exista antes de eliminarlo
+                if (gastoDoc.exists()) {
+                    // Eliminar el documento de la subcolección
+                    gastoRef.delete()
+                        .addOnSuccessListener { onSuccess() }
+                        .addOnFailureListener { onFailure(it) }
+                } else {
+                    onFailure(Exception("No se encontró el gasto con el ID $idGasto"))
+                }
+            }
+            .addOnFailureListener { onFailure(it) }
+    }
 
-     // Actualizar una canción existente dentro de una playlist
-     fun agregarCancion(idPlaylist: String, cancion: Cancion, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-         val cancionesRef = usuarioRef.document(idPlaylist).collection("canciones")
-         cancionesRef.add(cancion)
-             .addOnSuccessListener {
-                 cancion.id = it.id
-                 onSuccess()
-             }
-             .addOnFailureListener { onFailure(it) }
-     }
+    fun eliminarMeta(
+        idUsuario: String,
+        idMeta: String,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        // Obtener referencia al documento de la canción dentro de la subcolección
+        val metaRef =
+            usuarioRef.document(idUsuario).collection("metas").document(idMeta)
 
-     // Eliminar una canción existente dentro de una playlist
-     fun eliminarCancion(
-         idPlaylist: String,
-         idCancion: String,
-         onSuccess: () -> Unit,
-         onFailure: (Exception) -> Unit
-     ) {
-         // Obtener referencia al documento de la canción dentro de la subcolección
-         val cancionRef =
-             usuarioRef.document(idPlaylist).collection("canciones").document(idCancion)
-
-         cancionRef.get()
-             .addOnSuccessListener { cancionDoc ->
-                 // Verificar que el documento exista antes de eliminarlo
-                 if (cancionDoc.exists()) {
-                     // Eliminar el documento de la subcolección
-                     cancionRef.delete()
-                         .addOnSuccessListener { onSuccess() }
-                         .addOnFailureListener { onFailure(it) }
-                 } else {
-                     onFailure(Exception("No se encontró la canción con el ID $idCancion"))
-                 }
-             }
-             .addOnFailureListener { onFailure(it) }
-     }*/
+        metaRef.get()
+            .addOnSuccessListener { metaDoc ->
+                // Verificar que el documento exista antes de eliminarlo
+                if (metaDoc.exists()) {
+                    // Eliminar el documento de la subcolección
+                    metaRef.delete()
+                        .addOnSuccessListener { onSuccess() }
+                        .addOnFailureListener { onFailure(it) }
+                } else {
+                    onFailure(Exception("No se encontró la meta con el ID $idMeta"))
+                }
+            }
+            .addOnFailureListener { onFailure(it) }
+    }
 
 
 }

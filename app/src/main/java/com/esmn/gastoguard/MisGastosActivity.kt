@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.widget.*
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -17,9 +18,15 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class MisGastosActivity : AppCompatActivity() {
+    var idItemSeleccionado = 0
+
+    lateinit var itemAdapter: ItemAdapter
+
     lateinit var gastos: List<Item>
+    lateinit var listaGastos: ArrayList<Gasto>
     lateinit var idUsuario: String
     val dao: FireStoreDAO = FireStoreDAO()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mis_gastos)
@@ -44,9 +51,9 @@ class MisGastosActivity : AppCompatActivity() {
         }
 
         val editext1 = findViewById<EditText>(R.id.edittext1)
-        editext1.hint = "Descripcion.."
+        editext1.hint = "Descripcion..."
         val editext2 = findViewById<EditText>(R.id.edittext2)
-        editext2.hint = "Monto.."
+        editext2.hint = "Monto..."
 
         val combobox = findViewById<Spinner>(R.id.spinner)
         val entries = resources.getStringArray(R.array.options_gastos)
@@ -56,7 +63,7 @@ class MisGastosActivity : AppCompatActivity() {
         combobox.setSelection(0)
 
         idUsuario = intent.getStringExtra("idUsuario")!!
-        val listaGastos: ArrayList<Gasto> =
+        listaGastos =
             intent.getParcelableArrayListExtra<Gasto>("listaGastos")!!
         val rvGastos: RecyclerView = findViewById(R.id.rv_gastos)
         gastos = toItem(listaGastos)
@@ -75,6 +82,53 @@ class MisGastosActivity : AppCompatActivity() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        listaGastos =
+            intent.getParcelableArrayListExtra<Gasto>("listaGastos")!!
+        val rvGastos: RecyclerView = findViewById(R.id.rv_gastos)
+        gastos = toItem(listaGastos)
+        initRecyclerView(gastos, rvGastos)
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_delete_item -> {
+                idItemSeleccionado = itemAdapter.indiceSeleccionado
+                eliminarGasto()
+                return true
+            }
+
+            else -> super.onContextItemSelected(item)
+        }
+    }
+
+    fun eliminarGasto() {
+        val gastoIndex = idItemSeleccionado
+
+        val gastoId = listaGastos!![gastoIndex].id!!
+
+        dao.eliminarGasto(
+            idUsuario, gastoId,
+            onSuccess = {
+                Toast.makeText(this, "Gasto eliminado con exito", Toast.LENGTH_SHORT)
+                    .show()
+                listaGastos =
+                    listaGastos?.filterIndexed { index, _ -> index != gastoIndex } as ArrayList<Gasto>
+                val rvGastos: RecyclerView = findViewById(R.id.rv_gastos)
+                gastos = toItem(listaGastos)
+                initRecyclerView(gastos, rvGastos)
+            },
+            onFailure = { error ->
+                Toast.makeText(
+                    this,
+                    "Error al eliminar el gasto: $error",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        )
+    }
 
     fun filterRecyclerView(query: String, recyclerView: RecyclerView) {
         val filteredGastos = gastos.filter { gasto ->
@@ -109,6 +163,10 @@ class MisGastosActivity : AppCompatActivity() {
                 val adapter = recyclerView.adapter as ItemAdapter
                 adapter.notifyDataSetChanged()
 
+                findViewById<EditText>(R.id.edittext1).setText("")
+                findViewById<EditText>(R.id.edittext2).setText("")
+                findViewById<Spinner>(R.id.spinner).setSelection(0)
+
             }, onFailure = { exception ->
                 Toast.makeText(this, "Error agregar: $exception", Toast.LENGTH_SHORT)
                     .show()
@@ -131,6 +189,9 @@ class MisGastosActivity : AppCompatActivity() {
             this,
             listItems
         )
+
+        itemAdapter = adapter
+
         recyclerView.adapter = adapter
         recyclerView.itemAnimator = androidx.recyclerview.widget.DefaultItemAnimator()
         recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)

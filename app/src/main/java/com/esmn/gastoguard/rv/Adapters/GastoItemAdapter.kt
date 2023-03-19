@@ -8,12 +8,12 @@ import com.esmn.gastoguard.rv.Holders.GastoItemViewHolder
 import com.esmn.gastoguard.R
 import com.esmn.gastoguard.beans.Gasto
 
-class GastoItemAdapter (
+class GastoItemAdapter(
     private val items: List<Gasto>
-)  : RecyclerView.Adapter<GastoItemViewHolder>() {
+) : RecyclerView.Adapter<GastoItemViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GastoItemViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val itemView = inflater.inflate(R.layout.gasto_item,parent, false)
+        val itemView = inflater.inflate(R.layout.gasto_item, parent, false)
 
         return GastoItemViewHolder(itemView)
     }
@@ -22,7 +22,7 @@ class GastoItemAdapter (
         val item = items[position]
         holder.fechaGasto.text = item.fecha
         holder.valor.text = item.monto.toString()
-        Log.e("descripcion cat",item.descripcion + items.toString())
+        Log.e("descripcion cat", item.descripcion + items.toString())
     }
 
     override fun getItemCount(): Int {

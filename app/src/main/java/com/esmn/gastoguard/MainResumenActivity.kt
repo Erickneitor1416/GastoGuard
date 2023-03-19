@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.PopupMenu
 import android.widget.Toast
@@ -19,7 +20,7 @@ import com.esmn.gastoguard.beans.Usuario
 import com.esmn.gastoguard.rv.Adapters.ResumenItemAdapter
 
 class MainResumenActivity : AppCompatActivity() {
-    private val dao : FireStoreDAO = FireStoreDAO()
+    private val dao: FireStoreDAO = FireStoreDAO()
     lateinit var usuario: Usuario
     lateinit var resumenRecyclerView: RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,18 +33,17 @@ class MainResumenActivity : AppCompatActivity() {
             startActivity(Intent(this, MainActivity::class.java))
         }
 
+        resumenRecyclerView = findViewById(R.id.resumen_rv)
+        usuario = intent.getParcelableExtra("usuario") ?: Usuario()
 
-        resumenRecyclerView = findViewById<RecyclerView>(R.id.resumen_rv)
-        usuario = intent.getParcelableExtra("usuario")?: Usuario()
 
-
-        cargarDatos(usuario,resumenRecyclerView)
+        cargarDatos(usuario, resumenRecyclerView)
 
 
         val addButton = findViewById<ImageButton>(R.id.add_button)
         val popupMenu = PopupMenu(this, addButton)
         popupMenu.inflate(R.menu.menu_contextual_resumen)
-        addButton.setOnClickListener{
+        addButton.setOnClickListener {
             popupMenu.show()
         }
 
@@ -52,7 +52,7 @@ class MainResumenActivity : AppCompatActivity() {
                 R.id.menu_add_gasto -> {
                     val intent = Intent(this, MisGastosActivity::class.java)
                     val listaGastos = usuario.gastos as ArrayList<Gasto>
-                    intent.putExtra("idUsuario",usuario.id)
+                    intent.putExtra("idUsuario", usuario.id)
                     intent.putParcelableArrayListExtra("listaGastos", listaGastos)
                     startActivity(intent)
                     true
@@ -60,7 +60,7 @@ class MainResumenActivity : AppCompatActivity() {
                 R.id.menu_add_meta -> {
                     val intent = Intent(this, MisMetasActivity::class.java)
                     val listaMetas = usuario.metas as ArrayList<Meta>
-                    intent.putExtra("idUsuario",usuario.id)
+                    intent.putExtra("idUsuario", usuario.id)
                     intent.putParcelableArrayListExtra("listaMetas", listaMetas)
                     startActivity(intent)
                     true
@@ -68,21 +68,43 @@ class MainResumenActivity : AppCompatActivity() {
                 else -> false
             }
         }
-
-
-
     }
 
     override fun onResume() {
         super.onResume()
-        cargarDatos(usuario,resumenRecyclerView)
+        cargarDatos(usuario, resumenRecyclerView)
+
+        dao.getGastosDeUsuario(usuario.id!!, {
+            usuario.gastos = it
+        }, { exception ->
+            //Manejar error
+            Toast.makeText(
+                this,
+                "Error al actualizar gastos del usuario: $exception",
+                Toast.LENGTH_SHORT
+            )
+                .show()
+        })
+
+        dao.getMetasDeUsuario(usuario.id!!, {
+            usuario.metas = it
+        }, { exception ->
+            //Manejar error
+            Toast.makeText(
+                this,
+                "Error al actualizar metas del usuario: $exception",
+                Toast.LENGTH_SHORT
+            )
+                .show()
+        })
     }
-    private fun cargarDatos(usuario: Usuario, recyclerView: RecyclerView){
+
+    private fun cargarDatos(usuario: Usuario, recyclerView: RecyclerView) {
         dao.getCategoriasDeUsuario(usuario.id!!,
             onSuccess = { categorias ->
                 val resumenList = mutableListOf<Categoria>()
                 for ((categoria, gastos) in categorias) {
-                    Log.e("catgoria", categoria)
+                    Log.e("categoria", categoria)
                     resumenList.add(Categoria(categoria, gastos))
                 }
 
@@ -90,7 +112,11 @@ class MainResumenActivity : AppCompatActivity() {
                 recyclerView.adapter = resumenAdapter
             },
             onFailure = { error ->
-                Toast.makeText(this, "Error al obtener las categorías: ${error.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    "Error al obtener las categorías: ${error.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         )
         recyclerView.layoutManager = LinearLayoutManager(this)
