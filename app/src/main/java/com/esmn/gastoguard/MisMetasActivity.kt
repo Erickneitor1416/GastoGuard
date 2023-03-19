@@ -153,6 +153,8 @@ class MisMetasActivity : AppCompatActivity() {
 
                 val newList = metas as ArrayList<Item>
                 newList.add(Item(newMeta.nombre, newMeta.monto, newMeta.tipo))
+                listaMetas.add(newMeta)
+                metas = newList
                 val adapter = recyclerView.adapter as ItemAdapter
                 adapter.notifyDataSetChanged()
 

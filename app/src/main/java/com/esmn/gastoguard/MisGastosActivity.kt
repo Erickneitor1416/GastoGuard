@@ -160,6 +160,8 @@ class MisGastosActivity : AppCompatActivity() {
 
                 val newList = gastos as ArrayList<Item>
                 newList.add(Item(newGasto.descripcion, newGasto.monto, newGasto.fecha))
+                listaGastos.add(newGasto)
+                gastos = newList
                 val adapter = recyclerView.adapter as ItemAdapter
                 adapter.notifyDataSetChanged()
 
